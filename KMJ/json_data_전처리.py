@@ -33,10 +33,27 @@ for idx, (folder, zip_path) in enumerate(zip_files, start=1):
         continue
 
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-        zip_ref.extractall(extract_folder)
-    
-    os.remove(zip_path)  # 압축 해제 후 원본 ZIP 삭제
-    print(f"✅ {zip_name} 압축 해제 완료 및 삭제 → {extract_folder}")
+        for member in zip_ref.infolist():
+            try:
+                # CP437 → CP949 변환 (Windows에서 압축된 경우 파일명 깨짐 방지)
+                filename = member.filename.encode('cp437').decode('cp949', errors='ignore')
+                safe_path = os.path.normpath(os.path.join(extract_folder, filename))
+                if not safe_path.startswith(extract_folder):
+                    print(f"🚨 경고: 위험한 경로 탐지 {filename}")
+                    continue
+                
+                # 디렉토리인 경우 생성
+                if member.is_dir():
+                    os.makedirs(safe_path, exist_ok=True)
+                else:
+                    # 파일 저장
+                    with open(safe_path, "wb") as f:
+                        f.write(zip_ref.read(member.filename))
+                        
+            except OSError as e:
+                print(f"⚠️ 파일 추출 중 오류 발생: {e}")
+                continue
+        print(f"✅ {zip_name} 압축 해제 완료 → {extract_folder}")
 
 print("📂 모든 '[라벨]' ZIP 파일 해제 및 정리 완료!")
 
@@ -91,8 +108,6 @@ for json_path in json_files:
             filtered_item["1회 섭취량(g)"] = None
         
         all_data.append(filtered_item)
-    
-    os.remove(json_path)  # 변환 후 원본 JSON 삭제
 
 # CSV 저장
 if all_data:
