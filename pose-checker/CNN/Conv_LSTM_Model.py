@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
 import tensorflow as tf
-from tensorflow.keras.applications import NASNetMobile, ResNet101
+from tensorflow.keras.applications import NASNetMobile, ResNet101, EfficientNetB3, EfficientNetB7
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (
     Input, ConvLSTM2D, TimeDistributed, BatchNormalization,
     Conv2D, Dense, Flatten, GlobalAveragePooling2D, 
-    GlobalAveragePooling1D, Dropout
+    GlobalAveragePooling1D, Dropout, Reshape
 )
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.callbacks import Callback, ReduceLROnPlateau
@@ -245,7 +245,9 @@ class DatasetLoader:
                 json.dump(label_mapping, f, indent=4, ensure_ascii=False)
 
         if save_mapping:
-            save_label_mapping(label_mapping, filename=mapping_filename)
+            if "/" in mapping_filename:
+                safe_filename = mapping_filename.replace("/", "_")
+            save_label_mapping(label_mapping, filename=safe_filename)
 
         return train_X, train_Y, test_X, test_Y, label_mapping
 
@@ -311,7 +313,7 @@ class ConvLSTM_ResNet_Model:
 
     def build_model(self):
         video_input = Input(shape=self.input_shape)
-        x = ConvLSTM2D(filters=64, kernel_size=(3, 3), padding="same", return_sequences=True, activation="relu")(video_input)
+        x = ConvLSTM2D(filters=128, kernel_size=(5, 5), padding="same", return_sequences=True, activation="relu")(video_input)
         x = BatchNormalization()(x)
 
         # ConvLSTM → ResNet101 연결을 위해 채널 변환
@@ -334,11 +336,11 @@ class ConvLSTM_ResNet_Model:
 
         # Fully Connected Layer
         x = Flatten()(x)
-        x = Dense(512, activation="relu")(x)
+        x = Dense(512, activation="relu", kernel_regularizer=l2(0.01))(x)
         x = Dropout(0.3)(x)
-        x = Dense(256, activation="relu")(x)
+        x = Dense(256, activation="relu", kernel_regularizer=l2(0.01))(x)
         x = Dropout(0.3)(x)
-        x = Dense(128, activation="relu")(x)
+        x = Dense(128, activation="relu", kernel_regularizer=l2(0.01))(x)
         x = Dropout(0.2)(x)
         x = Dense(self.num_classes, activation="softmax")(x)
 
@@ -347,6 +349,154 @@ class ConvLSTM_ResNet_Model:
                       loss="categorical_crossentropy",
                       metrics=["accuracy"])
         return model
+
+class ConvLSTM_EfficientNetB7_Model:
+    """
+    ConvLSTM + EfficientNetB7 모델 클래스
+    """
+    def __init__(self, input_shape=(None, 64, 64, 3), num_classes=3):
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.model = self.build_model()
+
+    def build_model(self):
+        video_input = Input(shape=self.input_shape)
+        x = ConvLSTM2D(filters=128, kernel_size=(5, 5), padding="same", return_sequences=True, activation="relu")(video_input)
+        x = BatchNormalization()(x)
+
+        # ConvLSTM → ResNet101 연결을 위해 채널 변환
+        x = TimeDistributed(Conv2D(3, (1, 1), activation="relu"))(x)
+
+        # ResNet101 불러오기 (사전 학습된 가중치 사용)
+        base_model = EfficientNetB7(weights="imagenet", include_top=False, input_shape=(64, 64, 3))
+        base_model.trainable = False  # 초기 가중치 동결
+
+        for layer in base_model.layers[-30:]:  
+            layer.trainable = True  # 마지막 20개 레이어만 학습 가능
+
+        # TimeDistributed로 ResNet 적용
+        x = TimeDistributed(base_model)(x)
+        x = BatchNormalization()(x)
+        x = TimeDistributed(GlobalAveragePooling2D())(x)
+
+        # 차원 축소
+        x = GlobalAveragePooling1D()(x)
+
+        # Fully Connected Layer
+        x = Flatten()(x)
+        x = Dense(512, activation="relu", kernel_regularizer=l2(0.01))(x)
+        x = Dropout(0.3)(x)
+        x = Dense(256, activation="relu", kernel_regularizer=l2(0.01))(x)
+        x = Dropout(0.3)(x)
+        x = Dense(128, activation="relu", kernel_regularizer=l2(0.01))(x)
+        x = Dropout(0.2)(x)
+        x = Dense(self.num_classes, activation="softmax")(x)
+
+        model = Model(inputs=video_input, outputs=x)
+        model.compile(optimizer='adam',
+                      loss="categorical_crossentropy",
+                      metrics=["accuracy"])
+        return model
+
+# class ConvLSTM_EfficientNetB3_Model:
+#     """
+#     ConvLSTM + EfficientNetB3 모델 클래스
+#     """
+#     def __init__(self, input_shape=(None, 64, 64, 3), num_classes=3):
+#         self.input_shape = input_shape
+#         self.num_classes = num_classes
+#         self.model = self.build_model()
+
+#     def build_model(self):
+#         video_input = Input(shape=self.input_shape)
+#         x = ConvLSTM2D(filters=64, kernel_size=(3, 3), padding="same", return_sequences=True, activation="relu")(video_input)
+#         x = BatchNormalization()(x)
+
+#         x = ConvLSTM2D(filters=128, kernel_size=(3, 3), padding="same", return_sequences=True, activation="relu")(x)
+#         x = BatchNormalization()(x)
+
+#         x = ConvLSTM2D(filters=256, kernel_size=(3, 3), padding="same", return_sequences=False, activation="relu")(x)
+#         x = BatchNormalization()(x)
+
+#         x = Reshape((1, 64, 64, 256))(x)
+#         # ConvLSTM → EfficientNetB3 연결을 위해 채널 변환
+#         x = TimeDistributed(Conv2D(3, (1, 1), activation="relu"))(x)
+
+#         # NASNetMobile 불러오기 (사전 학습된 가중치 사용)
+#         base_model = EfficientNetB3(weights="imagenet", include_top=False, input_shape=(64, 64, 3))
+#         base_model.trainable = False  # 초기 가중치 동결
+
+#         for layer in base_model.layers[-20:]:  
+#             layer.trainable = True  # 마지막 20개 레이어만 학습 가능
+
+#         # TimeDistributed로 NASNet 적용
+#         x = TimeDistributed(base_model)(x)
+#         x = BatchNormalization()(x)
+#         x = TimeDistributed(GlobalAveragePooling2D())(x)
+
+#         # 차원 축소
+#         x = GlobalAveragePooling1D()(x)
+
+#         # Fully Connected Layer
+#         x = Flatten()(x)
+#         x = Dense(512, activation="relu", kernel_regularizer=l2(0.01))(x)
+#         x = Dropout(0.3)(x)
+#         x = Dense(256, activation="relu", kernel_regularizer=l2(0.01))(x)
+#         x = Dropout(0.3)(x)
+#         x = Dense(128, activation="relu", kernel_regularizer=l2(0.01))(x)
+#         x = Dropout(0.3)(x)
+#         x = Dense(self.num_classes, activation="softmax")(x)
+
+#         model = Model(inputs=video_input, outputs=x)
+#         model.compile(optimizer='adam',
+#                       loss="categorical_crossentropy",
+#                       metrics=["accuracy"])
+#         return model
+
+def build_model(self):
+    video_input = Input(shape=self.input_shape)
+    
+    # ConvLSTM2D 스택 적용
+    x = ConvLSTM2D(filters=64, kernel_size=(3, 3), padding="same", return_sequences=True, activation="relu")(video_input)
+    x = BatchNormalization()(x)
+
+    x = ConvLSTM2D(filters=128, kernel_size=(3, 3), padding="same", return_sequences=True, activation="relu")(x)
+    x = BatchNormalization()(x)
+
+    x = ConvLSTM2D(filters=256, kernel_size=(3, 3), padding="same", return_sequences=False, activation="relu")(x)
+    x = BatchNormalization()(x)
+
+    # ConvLSTM → EfficientNetB3 연결을 위해 채널 변환
+    x = Conv2D(3, (1, 1), activation="relu")(x)
+
+    # EfficientNetB3 불러오기 (사전 학습된 가중치 사용)
+    base_model = EfficientNetB3(weights="imagenet", include_top=False, input_shape=(64, 64, 3))
+    base_model.trainable = False  # 초기 가중치 동결
+
+    # 일부 레이어만 학습 가능하도록 설정
+    for layer in base_model.layers[-20:]:  
+        layer.trainable = True  # 마지막 20개 레이어만 학습 가능
+
+    # EfficientNetB3 적용 (TimeDistributed 필요 없음)
+    x = base_model(x)
+    x = BatchNormalization()(x)
+    x = GlobalAveragePooling2D()(x)
+
+    # Fully Connected Layer
+    x = Dense(512, activation="relu", kernel_regularizer=l2(0.01))(x)
+    x = Dropout(0.3)(x)
+    x = Dense(256, activation="relu", kernel_regularizer=l2(0.01))(x)
+    x = Dropout(0.3)(x)
+    x = Dense(128, activation="relu", kernel_regularizer=l2(0.01))(x)
+    x = Dropout(0.3)(x)
+    x = Dense(self.num_classes, activation="softmax")(x)
+
+    model = Model(inputs=video_input, outputs=x)
+    model.compile(optimizer='adam',
+                  loss="categorical_crossentropy",
+                  metrics=["accuracy"])
+    return model
+
 
 class CustomCheckpoint(Callback):
     """
