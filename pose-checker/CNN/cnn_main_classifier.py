@@ -1,36 +1,47 @@
 from Conv_LSTM_Model import DatasetLoader, ConvLSTM_ResNet_Model, Trainer
 import pandas as pd
+import numpy as np
 import os
 
-base_dir = 'D:/KHH/team_project/json_data/'
 img_base_dir = 'D:/KHH/team_project/img/'
-dataset_loader = DatasetLoader(base_dir, img_base_dir, img_size=(64, 64), test_split=0.2)
 
-json_df = pd.concat([pd.read_csv(base_dir+file) for file in os.listdir(base_dir) if 'validation' not in file])
-json_df['folder'] = json_df['img_key'].apply(lambda x: "/".join(x.split("/")[:4])).str.replace('/', '@')
+category_mapping = {
+            '바벨/덤벨': 'Barbell_Dumbbell/',
+            '맨몸 운동': 'Bodyweight/',
+            '기구': 'Equipment/'
+        }
 
-# print(json_df)
+json_df = pd.read_csv('D:/KHH/team_project/json_data/cnn_data.csv')
+print(json_df)
 
-dataset_df = dataset_loader.stratified_sampling_and_split_categorys(json_df, 'type', 'folder', 200)
-
-
+data_loader = DatasetLoader()
+dataset_df = data_loader.random_sampling_data(json_df, 'type', size=50)
+print(dataset_df.info())
 print(dataset_df)
 
-dataset_X, dataset_Y = dataset_loader.load_images(dataset_df['folder'], dataset_df['type'])
+data_X, data_y = data_loader.main_load_img(dataset_df, 'folder', 'type')
+data_Y = data_loader.one_hot_encode(data_y)
+print(data_X.shape, data_Y.shape)
 
-print(dataset_X.shape, dataset_Y.shape)
-print(dataset_Y)
+# 고유값과 개수 계산
+unique_values, counts = np.unique(data_y, return_counts=True)
 
-train_X, train_Y, test_X, test_Y, _ = dataset_loader.split_data(dataset_X, dataset_Y, mapping_filename="type_라벨인코더.json")
-print(train_Y)
-print('-----------------------------------------------------------')
-print(test_Y)
+# 결과 출력
+print(unique_values)  # [1 2 3 4]
+print(counts)  # [1 2 3 4]
 
-model = ConvLSTM_ResNet_Model().build_model()
+unique_values, counts = np.unique(data_Y, return_counts=True)
 
-print(train_X.shape, train_Y.shape)
-print(test_X.shape, test_Y.shape)
+# 결과 출력
+print(unique_values)  # [1 2 3 4]
+print(counts)  # [1 2 3 4]
 
-trainer = Trainer(model=model, train_X=train_X, train_y=train_Y, test_X=test_X, test_y=test_Y,epochs=100)
-trainer.train()
-trainer.evaluate()
+
+X_train, X_test, y_train, y_test = data_loader.train_test_split(data_X, data_Y)
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+modle = ConvLSTM_ResNet_Model(input_shape=data_X.shape[1:], num_classes=data_Y.shape[1]).build_model()
+
+trainder = Trainer(model=modle, train_X=X_train, train_y=data_Y, test_X=X_test, test_y=y_test, save_path='D:/KHH/team_project/proseced_logic/Conv_LSTM_Rasnet_sub/')
+trainder.train()
+trainder.evaluate()
