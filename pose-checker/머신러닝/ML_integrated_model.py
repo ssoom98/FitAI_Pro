@@ -1,18 +1,22 @@
 import pandas as pd
 import os
 import numpy as np
-import ast
+import json
 import re
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 import joblib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 base_path = 'D:/KHH/team_project/ML_data/'
+save_path = "D:/KHH/team_project/proseced_logic/ML_integrated_model/"
+eval_save_path = "D:/KHH/team_project/proseced_logic/ML_integrated_model/model_evaluation/"
 
 def convert_to_list(x):
     # 정규 표현식을 사용하여 숫자만 추출
@@ -50,6 +54,10 @@ X_padded = pad_sequences(X, padding='post', dtype='float32')
 
 le = LabelEncoder()
 y_data = le.fit_transform(y)
+label_mapping = {str(i): label for i, label in enumerate(le.classes_)}
+with open(save_path+"label_mapping.json", "w", encoding="utf-8") as f:
+    json.dump(label_mapping, f, ensure_ascii=False, indent=4)
+
 X_train, X_test, Y_train, Y_test = train_test_split(X_padded, y_data, test_size=0.3, shuffle=True)
 
 xgb_model = XGBClassifier(eval_metric="logloss")
@@ -60,22 +68,50 @@ lgbm_model.fit(X_train, Y_train)
 
 xgb_pred = xgb_model.predict(X_test)
 lgbm_pred = lgbm_model.predict(X_test)
+
 xgb_accuracy = accuracy_score(Y_test, xgb_pred)
 xgb_f1 = f1_score(Y_test, xgb_pred, average='weighted')
+xgb_precision = precision_score(Y_test, xgb_pred, average='weighted')
+xgb_recall = recall_score(Y_test, xgb_pred, average='weighted')
 
 lgbm_accuracy = accuracy_score(Y_test, lgbm_pred)
 lgbm_f1 = f1_score(Y_test, lgbm_pred, average='weighted')
+lgbm_precision = precision_score(Y_test, lgbm_pred, average='weighted')
+lgbm_recall = recall_score(Y_test, lgbm_pred, average='weighted')
 
 results = pd.DataFrame({
-'Model': ['XGBoost', 'LightGBM'],
-'Accuracy': [xgb_accuracy, lgbm_accuracy],
-'F1 Score': [xgb_f1, lgbm_f1]
+    'Model': ['XGBoost', 'LightGBM'],
+    'Accuracy': [xgb_accuracy, lgbm_accuracy],
+    'F1 Score': [xgb_f1, lgbm_f1],
+    'Precision': [xgb_precision, lgbm_precision],
+    'Recall': [xgb_recall, lgbm_recall]
 })
 
-save_path = "D:/KHH/team_project/proseced_logic/ML_integrated_model/"
-eval_save_path = "D:/KHH/team_project/proseced_logic/ML_integrated_model/model_evaluation/"
-results.to_csv(eval_save_path+"integrated_model_evaluation_results.csv", index=False)
-print("모델 평가 결과가 'model_evaluation_results.csv' 파일에 저장되었습니다.")
+results.to_csv(eval_save_path+"integrated_for_use_model_evaluation_results.csv", index=False)
+print("모델 평가 결과가 'model_for_use_evaluation_results.csv' 파일에 저장되었습니다.")
 
-joblib.dump(xgb_model, save_path+"integrated_xgb_model.pkl")
-joblib.dump(lgbm_model, save_path+"integrated_lgbm_model.pkl")
+crosstab_data = pd.crosstab(Y_test, xgb_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(crosstab_data, annot=True, fmt="d", cmap="Blues")
+plt.title("Crosstab XGB model")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+
+# 플롯을 파일로 저장 (dpi: 해상도, bbox_inches: 레이아웃 여백 설정)
+plt.savefig(save_path+"xgb_crosstab_plot.png", dpi=300, bbox_inches='tight')
+print("crosstap이 저장되었습니다")
+plt.show()
+
+crosstab_data = pd.crosstab(Y_test, lgbm_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(crosstab_data, annot=True, fmt="d", cmap="Blues")
+plt.title("Crosstab LGBM model")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+
+plt.savefig(save_path+"lgbm_crosstab_plot.png", dpi=300, bbox_inches='tight')
+print("crosstap이 저장되었습니다")
+plt.show()
+
+joblib.dump(xgb_model, save_path+"integrated_for_use_xgb_model.pkl")
+joblib.dump(lgbm_model, save_path+"integrated_for_use_lgbm_model.pkl")
