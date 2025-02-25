@@ -2,5 +2,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.diet_home, name='diet_home'),
+    path('', views.diet_input, name='diet_input'),
 ]

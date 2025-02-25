@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>식단 추천 입력</title>
+</head>
+<body>
+    <h2>맞춤형 식단 추천</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>성별:</label>
+        <select name="gender">
+            <option value="0">남성</option>
+            <option value="1">여성</option>
+        </select>
+
+        <label>체형:</label>
+        <select name="body_type">
+            <option value="0">사과형</option>
+            <option value="1">배형</option>
+            <option value="2">모래시계형</option>
+        </select>
+
+        <label>목표:</label>
+        <select name="goal">
+            <option value="0">다이어트</option>
+            <option value="1">유지</option>
+            <option value="2">근육 증가</option>
+        </select>
+
+        <button type="submit">분석</button>
+    </form>
+    {% if total_calories %}
+    <h3>일일 섭취량 추천:</h3>
+    <p>총 칼로리: {{ total_calories }} kcal</p>
+    <p>탄수화물: {{ carbs }} g</p>
+    <p>단백질: {{ protein }} g</p>
+    <p>지방: {{ fat }} g</p>
+    {% endif %}
+
+</body>
+</html>
