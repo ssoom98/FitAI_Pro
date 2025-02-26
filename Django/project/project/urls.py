@@ -21,6 +21,7 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),  # home을 별도 앱으로 분리 (추천)
+    path('body/', include('body_type.urls')),
     path('diet/', include('diet_recommendation.urls')),
     path('pose/', include('pose_analysis.urls')),
 ]
