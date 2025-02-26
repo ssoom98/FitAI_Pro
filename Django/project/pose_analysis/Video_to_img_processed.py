@@ -43,7 +43,7 @@ class ImageProcessor:
 
     def extract_middle_32_frames(self, video_path, output_dir, confidence_threshold=0.5, bg_color=(0, 0, 0)):
         """
-        동영상 파일에서 초당 1프레임씩 추출한 후, 전체 추출된 프레임 중 가운데 32프레임에 대해
+        동영상 파일에서 초당 1프레임씩 추출한 후, 전체 추출된 프레임 중 가운데 17프레임에 대해
         YOLOv8 FHD 크롭(detect_person_yolov8_fhd_crop_from_frame)을 적용하여 지정한 output_dir에 저장합니다.
         """
         cap = cv2.VideoCapture(video_path)
@@ -68,12 +68,12 @@ class ImageProcessor:
         cap.release()
 
         total_frames = len(frames)
-        if total_frames < 32:
+        if total_frames < 17:
             print(f"추출된 프레임 수({total_frames})가 32보다 적습니다.")
             return
 
-        start_idx = (total_frames - 32) // 2
-        end_idx = start_idx + 32
+        start_idx = (total_frames - 18) // 2
+        end_idx = start_idx + 17
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)

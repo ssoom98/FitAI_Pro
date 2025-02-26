@@ -1,0 +1,18 @@
+<!-- templates/pose/upload_success.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>동영상 업로드 성공</title>
+</head>
+<body>
+  <h1>동영상 업로드 성공!</h1>
+  <p>업로드된 동영상: {{ video_name }}</p>
+
+  <!-- "다음" 버튼: 다음 단계 view로 이동 -->
+  <form action="{% url 'pose:preview' %}" method="get">
+    <input type="hidden" name="video_name" value="{{ video_name }}">
+    <button type="submit">다음</button>
+  </form>
+</body>
+</html>
