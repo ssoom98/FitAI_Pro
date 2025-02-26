@@ -7,9 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
     <style>
+         .logo-container {
+            margin-top: 20px;
+        }
+
+        .logo {
+            width: 250px;
+            height: auto;
+        }
+
         body {
             text-align: center;
-            background-color: #eef2f3;
+            background-color: #ffffff;
             font-family: 'Arial', sans-serif;
         }
 
@@ -28,35 +37,38 @@
             align-items: center;
             justify-content: flex-end;
             padding-bottom: 15px;
-            font-size: 3em;
-            font-weight: bold;
             text-decoration: none;
-            color: black;
             border-radius: 15px;
             background-size: cover;
             background-position: center;
             box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        a {
-
+        .btn-text {
+            font-size: 25px;
+            font-weight: bold;
+            padding: 15px;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <h1>원하는 기능을 선택하세요</h1>
+    <div class="logo-container">
+        <img src="{% static 'img/logo.png' %}" alt="로고" class="logo">
+    </div>
     <div class="button-container">
-        <a href="/diet/" class="btn" style="background-image: url('{% static 'img/diet.jpg' %}');">
-            체형 예측 & 식단 추천
-        </a>
-        <a href="/pose/" class="btn" style="background-image: url('{% static 'img/pose.jpg' %}');">
-            운동 자세 분석
-        </a>
+        <div class="btn-wrapper">
+            <div class="btn-text">체형 예측</div>
+        <a href="/body/" class="btn" style="background-image: url('{% static 'img/diet.jpg' %}');"></a>
+        </div>
+        <div class="btn-wrapper">
+            <div class="btn-text">식단 추천</div>
+        <a href="/diet/" class="btn" style="background-image: url('{% static 'img/diet.jpg' %}');"></a>
+        </div>
+        <div class="btn-wrapper">
+            <div class="btn-text">운동 자세 분석</div>
+        <a href="/pose/" class="btn" style="background-image: url('{% static 'img/pose.png' %}');"></a>
+        </div>
     </div>
 </body>
 </html>
