@@ -3,27 +3,134 @@ import joblib
 import numpy as np
 import os
 from django.conf import settings
-import pandas as pd
 
-# 모델 파일 경로 설정
 model_plan_path = os.path.join(settings.BASE_DIR, 'diet_recommendation', 'model', 'xgboost_meal_plan.pkl')
-
-# 모델 로드
 model_plan = joblib.load(model_plan_path)
 
-# CSV 파일 로드 (NaN 값 0으로 변환)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_PATH = os.path.join(BASE_DIR, "diet_recommendation", "static", "data", "food_nutrition_data.csv")
+# 체형 + 목표별 추천 음식 리스트 (고정)
+fixed_meals = {
+    ("사과형", "다이어트"): {
+        "아침": ["현미밥", "닭가슴살", "나물"],
+        "점심": ["고구마", "삶은 달걀", "샐러드"],
+        "저녁": ["연어구이", "아보카도", "채소볶음"]
+    },
+    ("사과형", "유지"): {
+        "아침": ["오트밀", "우유", "견과류"],
+        "점심": ["생선구이", "잡곡밥", "채소"],
+        "저녁": ["두부 샐러드", "달걀", "견과류"]
+    },
+    ("사과형", "근육 증가"): {
+        "아침": ["스크램블 에그", "호밀빵", "바나나"],
+        "점심": ["닭가슴살", "고구마", "브로콜리"],
+        "저녁": ["소고기 스테이크", "현미밥", "삶은 계란"]
+    },
 
-food_data = pd.read_csv(CSV_PATH)
-food_data = food_data.fillna(0)  # NaN 값을 0으로 변경
+    ("배형", "다이어트"): {
+        "아침": ["두부 샐러드", "아몬드", "요거트"],
+        "점심": ["생선구이", "야채볶음", "잡곡밥"],
+        "저녁": ["닭가슴살", "고구마", "양상추 샐러드"]
+    },
+    ("배형", "유지"): {
+        "아침": ["바나나", "그릭요거트", "견과류"],
+        "점심": ["현미밥", "불고기", "나물"],
+        "저녁": ["삶은 계란", "아보카도", "닭가슴살 샐러드"]
+    },
+    ("배형", "근육 증가"): {
+        "아침": ["삶은 계란", "바나나", "우유"],
+        "점심": ["돼지고기 등심", "현미밥", "채소"],
+        "저녁": ["닭가슴살", "고구마", "아몬드"]
+    },
 
-# 사용자 입력 폼
+    ("모래시계형", "다이어트"): {
+        "아침": ["귀리죽", "삶은 달걀", "견과류"],
+        "점심": ["생선구이", "브로콜리", "잡곡밥"],
+        "저녁": ["닭가슴살", "아보카도 샐러드", "올리브유"]
+    },
+    ("모래시계형", "유지"): {
+        "아침": ["호밀빵", "스크램블 에그", "아몬드"],
+        "점심": ["불고기", "잡곡밥", "채소볶음"],
+        "저녁": ["연어 샐러드", "견과류", "두유"]
+    },
+    ("모래시계형", "근육 증가"): {
+        "아침": ["오트밀", "우유", "삶은 계란"],
+        "점심": ["닭가슴살", "고구마", "채소"],
+        "저녁": ["소고기", "현미밥", "견과류"]
+    },
+
+    ("엉덩이형", "다이어트"): {
+        "아침": ["오트밀", "아몬드", "저지방 우유"],
+        "점심": ["닭가슴살", "고구마", "나물"],
+        "저녁": ["생선회", "샐러드", "올리브유"]
+    },
+    ("엉덩이형", "유지"): {
+        "아침": ["호밀빵", "치즈", "바나나"],
+        "점심": ["돼지고기 구이", "현미밥", "채소"],
+        "저녁": ["두부 샐러드", "삶은 계란", "견과류"]
+    },
+    ("엉덩이형", "근육 증가"): {
+        "아침": ["바나나", "그릭요거트", "아몬드"],
+        "점심": ["소고기", "현미밥", "채소"],
+        "저녁": ["닭가슴살", "고구마", "아보카도"]
+    },
+
+    ("상체형", "다이어트"): {
+        "아침": ["두부 샐러드", "아몬드", "저지방 우유"],
+        "점심": ["현미밥", "생선구이", "브로콜리"],
+        "저녁": ["닭가슴살 샐러드", "고구마", "올리브유"]
+    },
+    ("상체형", "유지"): {
+        "아침": ["호밀빵", "달걀", "견과류"],
+        "점심": ["불고기", "잡곡밥", "나물"],
+        "저녁": ["생선 샐러드", "두유", "아보카도"]
+    },
+    ("상체형", "근육 증가"): {
+        "아침": ["삶은 계란", "바나나", "우유"],
+        "점심": ["닭가슴살", "고구마", "채소"],
+        "저녁": ["소고기", "현미밥", "견과류"]
+    },
+
+    ("하체형", "다이어트"): {
+        "아침": ["오트밀", "아몬드", "저지방 우유"],
+        "점심": ["닭가슴살", "고구마", "샐러드"],
+        "저녁": ["연어구이", "브로콜리", "잡곡밥"]
+    },
+    ("하체형", "유지"): {
+        "아침": ["스크램블 에그", "호밀빵", "바나나"],
+        "점심": ["돼지고기 구이", "현미밥", "채소볶음"],
+        "저녁": ["두부 샐러드", "아몬드", "삶은 달걀"]
+    },
+    ("하체형", "근육 증가"): {
+        "아침": ["삶은 계란", "바나나", "우유"],
+        "점심": ["닭가슴살", "현미밥", "채소"],
+        "저녁": ["소고기", "고구마", "견과류"]
+    },
+
+    ("표준체형", "다이어트"): {
+        "아침": ["오트밀", "아몬드", "그릭요거트"],
+        "점심": ["현미밥", "생선구이", "채소"],
+        "저녁": ["닭가슴살 샐러드", "고구마", "올리브유"]
+    },
+    ("표준체형", "유지"): {
+        "아침": ["호밀빵", "스크램블 에그", "바나나"],
+        "점심": ["불고기", "잡곡밥", "나물"],
+        "저녁": ["연어 샐러드", "견과류", "두유"]
+    },
+    ("표준체형", "근육 증가"): {
+        "아침": ["삶은 계란", "바나나", "우유"],
+        "점심": ["닭가슴살", "고구마", "채소"],
+        "저녁": ["소고기", "현미밥", "견과류"]
+    }
+}
+
 def diet_input(request):
     total_calories = None
     carbs = None
     protein = None
     fat = None
+    selected_gender_text = None
+    selected_body_type_text = None
+    selected_goal_text = None
+    breakfast = lunch = dinner = None
 
     if request.method == "POST":
         try:
@@ -33,14 +140,28 @@ def diet_input(request):
 
             input_data = np.array([[gender, body_type, goal]], dtype=np.float32)
 
-            # 모델 예측 실행
             prediction = model_plan.predict(input_data).flatten()
 
-            # 예측값 개별 추출
             total_calories = int(prediction[0])
             carbs = round(prediction[1], 1)
             protein = round(prediction[2], 1)
             fat = round(prediction[3], 1)
+
+            gender_map = {0: "남성", 1: "여성"}
+            body_type_map = {0: "사과형", 1: "배형", 2: "모래시계형", 3: "엉덩이형", 4: "상체형", 5: "하체형", 6: "표준체형"}
+            goal_map = {0: "다이어트", 1: "유지", 2: "근육 증가"}
+
+            selected_gender_text = gender_map.get(gender, "")
+            selected_body_type_text = body_type_map.get(body_type, "")
+            selected_goal_text = goal_map.get(goal, "")
+
+            meal_key = (selected_body_type_text, selected_goal_text)
+            if meal_key in fixed_meals:
+                breakfast = fixed_meals[meal_key]["아침"]
+                lunch = fixed_meals[meal_key]["점심"]
+                dinner = fixed_meals[meal_key]["저녁"]
+            else:
+                breakfast = lunch = dinner = ["식단 정보 없음"]
 
         except Exception as e:
             return render(request, "diet_recommendation/diet_input.html", {
@@ -51,66 +172,11 @@ def diet_input(request):
         "total_calories": total_calories,
         "carbs": carbs,
         "protein": protein,
-        "fat": fat
+        "fat": fat,
+        "selected_gender_text": selected_gender_text,
+        "selected_body_type_text": selected_body_type_text,
+        "selected_goal_text": selected_goal_text,
+        "breakfast": breakfast,
+        "lunch": lunch,
+        "dinner": dinner
     })
-
-# ✅ 랜덤 방식으로 식단 추천 함수
-def get_random_meal(target_calories):
-    filtered_foods = food_data[food_data["칼로리"] <= target_calories]
-
-    if len(filtered_foods) >= 6:
-        recommended_foods = filtered_foods.sample(n=6)
-    elif len(filtered_foods) > 0:
-        recommended_foods = filtered_foods.sample(n=len(filtered_foods))
-    else:
-        recommended_foods = food_data.sample(n=6)  # 전체 데이터에서 6개 선택
-
-    return recommended_foods.to_dict(orient="records")
-
-def recommend_meal(request):
-    if request.method == "POST":
-        # 사용자가 선택한 값 받기
-        selected_gender = request.POST.get("gender")
-        selected_body_type = request.POST.get("body_type")
-        selected_goal = request.POST.get("goal")
-
-        # 선택한 값을 텍스트로 변환
-        gender_map = {"0": "남성", "1": "여성"}
-        body_type_map = {"0": "사과형", "1": "배형", "2": "모래시계형"}
-        goal_map = {"0": "다이어트", "1": "유지", "2": "근육 증가"}
-
-        selected_gender_text = gender_map.get(selected_gender, "")
-        selected_body_type_text = body_type_map.get(selected_body_type, "")
-        selected_goal_text = goal_map.get(selected_goal, "")
-
-        # 👉 모델 예측 실행
-        input_data = np.array([[float(selected_gender), float(selected_body_type), float(selected_goal)]], dtype=np.float32)
-        prediction = model_plan.predict(input_data).flatten()
-
-        total_calories = int(prediction[0])
-        carbs = round(prediction[1], 1)
-        protein = round(prediction[2], 1)
-        fat = round(prediction[3], 1)
-
-        # ✅ 랜덤 방식으로 식단 추천
-        meal_ratios = {"아침": 0.3, "점심": 0.4, "저녁": 0.3}
-        breakfast = get_random_meal(total_calories * meal_ratios["아침"])
-        lunch = get_random_meal(total_calories * meal_ratios["점심"])
-        dinner = get_random_meal(total_calories * meal_ratios["저녁"])
-
-        return render(request, "diet_recommendation/diet_input.html", {
-            "selected_gender_text": selected_gender_text,
-            "selected_body_type_text": selected_body_type_text,
-            "selected_goal_text": selected_goal_text,
-            "total_calories": total_calories,
-            "carbs": carbs,
-            "protein": protein,
-            "fat": fat,
-            "breakfast": breakfast,
-            "lunch": lunch,
-            "dinner": dinner,
-        })
-
-    return render(request, "diet_recommendation/diet_input.html")
-
-
