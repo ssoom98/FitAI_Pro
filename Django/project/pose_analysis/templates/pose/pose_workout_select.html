@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>운동 선택</title>
+</head>
+<body>
+  <h1>운동 선택</h1>
+  <form action="{% url 'pose:predict' %}" method="post">
+    <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+    {% csrf_token %}
+    <label for="exercise">운동을 선택하세요:</label>
+    <select name="workout" id="exercise">
+      <option value="Y-Exercise">Y-Exercise</option>
+      <option value="Good-Morning">Good-Morning</option>
+      <option value="Knee-Push-Up">Knee-Push-Up</option>
+      <option value="Dumbbell-Bent-Over-Row">Dumbbell-Bent-Over-Row</option>
+      <option value="Dumbbell-Incline-Chest-Fly">Dumbbell-Incline-Chest-Fly</option>
+      <option value="Dumbbell-Chest-Fly">Dumbbell-Chest-Fly</option>
+      <option value="Dumbbell-Curl">Dumbbell-Curl</option>
+      <option value="Dumbbell-Pullover">Dumbbell-Pullover</option>
+      <option value="Dips">Dips</option>
+      <option value="Lying-Leg-Raise">Lying-Leg-Raise</option>
+      <option value="Lying-Triceps-Extension">Lying-Triceps-Extension</option>
+      <option value="Lat-Pulldown">Lat-Pulldown</option>
+      <option value="Rowing-Machine">Rowing-Machine</option>
+      <option value="Barbell-Deadlift">Barbell-Deadlift</option>
+      <option value="Barbell-Lunge">Barbell-Lunge</option>
+      <option value="Barbell-Row">Barbell-Row</option>
+      <option value="Barbell-Squat">Barbell-Squat</option>
+      <option value="Barbell-Stiff-Leg-Deadlift">Barbell-Stiff-Leg-Deadlift</option>
+      <option value="Barbell-Curl">Barbell-Curl</option>
+      <option value="Bicycle-Crunch">Bicycle-Crunch</option>
+      <option value="Burpee-Test">Burpee-Test</option>
+      <option value="Side-Lunge">Side-Lunge</option>
+      <option value="Side-Lateral-Raise">Side-Lateral-Raise</option>
+      <option value="Standing-Knee-Raise">Standing-Knee-Raise</option>
+      <option value="Standing-Side-Crunch">Standing-Side-Crunch</option>
+      <option value="Step-Backward-Dynamic-Lunge">Step-Backward-Dynamic-Lunge</option>
+      <option value="Step-Forward-Dynamic-Lunge">Step-Forward-Dynamic-Lunge</option>
+      <option value="Scissor-Cross">Scissor-Cross</option>
+      <option value="Upright-Row">Upright-Row</option>
+      <option value="Overhead-Press">Overhead-Press</option>
+      <option value="Cable-Crunch">Cable-Crunch</option>
+      <option value="Cable-Push-Down">Cable-Push-Down</option>
+      <option value="Crunch">Crunch</option>
+      <option value="Cross-Lunge">Cross-Lunge</option>
+      <option value="Face-Pull">Face-Pull</option>
+      <option value="Push-Up">Push-Up</option>
+      <option value="Pull-Up">Pull-Up</option>
+      <option value="Front-Raise">Front-Raise</option>
+      <option value="Plank">Plank</option>
+      <option value="Hanging-Leg-Raise">Hanging-Leg-Raise</option>
+      <option value="Hip-Thrust">Hip-Thrust</option>
+    </select>
+    <button type="submit">선택</button>
+  </form>
+</body>
+</html>
