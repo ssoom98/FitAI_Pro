@@ -6,19 +6,23 @@
   <title>예측 운동 확인</title>
 </head>
 <body>
-  <h1>예측된 운동: {{ predicted_exercise }}</h1>
+  <h1>예측된 운동: {{ workout }}</h1>
   <p>예측된 운동이 맞습니까?</p>
 
   <!-- Yes 버튼을 누르면 자세 예측 단계로 이동 -->
-  <form action="{% url 'pose_prediction' %}" method="post" style="display: inline;">
+  <form action="{% url 'pose:predict' %}" method="post" style="display: inline;">
     {% csrf_token %}
+    <input type="hidden" name="workout" value="{{ workout }}">
+    <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
     <button type="submit" name="choice" value="yes">Yes</button>
   </form>
 
   <!-- No 버튼을 누르면 운동 선택 페이지로 이동 -->
-  <form action="{% url 'exercise_selection' %}" method="post" style="display: inline;">
+  <form action="{% url 'pose:workout_select' %}" method="post" style="display: inline;">
     {% csrf_token %}
+    <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
     <button type="submit" name="choice" value="no">No</button>
   </form>
+
 </body>
 </html>
