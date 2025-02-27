@@ -26,8 +26,8 @@ def pose_home(request):
     return render(request, 'pose/pose_home.html', {'form': form})
 
 def pose_preview(request):
-    if request.method == 'GET':
-        video_name = request.GET['video_name']
+    if request.method == 'POST':
+        video_name = request.POST['video_name']
         processor = ImageProcessor(model_path = 'pose_analysis/models/yolov8n.pt')
         video_dir = "pose_analysis/static/video/" + video_name
         if os.path.exists(video_dir) and os.path.isfile(video_dir):
