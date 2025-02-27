@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  {% load static %}
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/logo.png' %}">
   <meta charset="UTF-8">
   <title>운동 선택</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
   <h1>운동 선택</h1>
-  <form action="{% url 'pose:predict' %}" method="post">
+  <form id="selectForm" action="{% url 'pose:predict' %}" method="post">
     <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
     {% csrf_token %}
     <label for="exercise">운동을 선택하세요:</label>
@@ -53,7 +56,21 @@
       <option value="Hanging-Leg-Raise">Hanging-Leg-Raise</option>
       <option value="Hip-Thrust">Hip-Thrust</option>
     </select>
-    <button type="submit">선택</button>
+    <button id="selectButton" type="submit">선택</button>
   </form>
+
+  <script>
+    $(document).ready(function(){
+      $('#selectButton').on('click', function(e){
+        // 선택 버튼 클릭 시 폼 제출 전 로딩 오버레이 추가
+        $('body').append(
+          '<div id="loadingOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; text-align:center;">' +
+            '<img src="https://i.gifer.com/ZKZg.gif" alt="로딩중..." style="margin-top:20%;">' +
+          '</div>'
+        );
+        // 폼은 그대로 제출됨 (기본 동작 진행)
+      });
+    });
+  </script>
 </body>
 </html>
