@@ -125,6 +125,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+BODY_TYPE_DIR = os.path.join(BASE_DIR, "body_type")
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BODY_TYPE_DIR, "media")  # body_type 폴더 안에 media 저장
 
 
 # Default primary key field type

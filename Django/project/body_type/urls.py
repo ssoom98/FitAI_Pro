@@ -1,12 +1,8 @@
-from django.conf import settings
-from django.conf.urls.static import static
+# body_type/urls.py
 from django.urls import path
-from .views import predict_view
+from .views import predict_body_type
 
 urlpatterns = [
-    path('', predict_view, name='predict'),  # 기본 페이지를 업로드 페이지로 설정
+    path("", predict_body_type, name="body_type_home"),  # 기본 페이지를 predict_body_type으로 설정
+    path("predict/", predict_body_type, name="predict_body_type"),
 ]
-
-# 개발 환경에서 미디어 파일 접근 가능하도록 설정
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

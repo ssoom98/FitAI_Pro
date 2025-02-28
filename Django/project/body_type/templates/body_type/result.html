@@ -1,0 +1,29 @@
+<!-- body_type/templates/body_type/result.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>체형 예측 결과</title>
+</head>
+<body>
+    <h2>예측 결과</h2>
+
+    {% if image_url %}
+        <img src="{{ image_url }}" alt="업로드된 이미지" width="200">
+    {% endif %}
+    <p><strong>예측된 체형:</strong> {{ body_shape }}</p>
+    <p><strong>예측된 신체 수치:</strong></p>
+
+    <ul>
+        <li>키: {{ y_pred.0|floatformat:2 }} cm</li>
+        <li>몸무게: {{ y_pred.1|floatformat:2 }} kg</li>
+        <li>뱃살허리둘레: {{ y_pred.2|floatformat:2 }} cm</li>
+        <li>허리둘레: {{ y_pred.3|floatformat:2 }} cm</li>
+        <li>엉덩이둘레: {{ y_pred.4|floatformat:2 }} cm</li>
+        <li>허벅지둘레: {{ y_pred.5|floatformat:2 }} cm</li>
+        <li>가슴둘레: {{ y_pred.6|floatformat:2 }} cm</li>
+        <li>어깨사이너비: {{ y_pred.7|floatformat:2 }} cm</li>
+    </ul>
+
+    <a href="{% url 'predict_body_type' %}">다시 예측하기</a>
+</body>
+</html>

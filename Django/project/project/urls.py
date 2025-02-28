@@ -17,11 +17,15 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('home.urls')),  # home을 별도 앱으로 분리 (추천)
-    path('body/', include('body_type.urls')),
+    path("body_type/", include("body_type.urls")),
     path('diet/', include('diet_recommendation.urls')),
     path('pose/', include('pose_analysis.urls')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
