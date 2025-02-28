@@ -1,0 +1,15 @@
+<!-- body_type/templates/body_type/upload.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>체형 예측</title>
+</head>
+<body>
+    <h2>체형 예측을 위한 이미지 업로드</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">예측하기</button>
+    </form>
+</body>
+</html>
