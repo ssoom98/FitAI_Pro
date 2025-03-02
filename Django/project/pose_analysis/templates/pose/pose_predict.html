@@ -2,12 +2,22 @@
 <html lang="en">
 <head>
     {% load static %}
-
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>자세 측정 결과</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>자세 측정 결과입니다</h1>
-  {{pose_predict}}
+<body class="bg-light text-center">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="p-4 bg-white shadow rounded">
+                    <h1 class="mb-4">자세 측정 결과</h1>
+                    <p class="fs-5">{{ pose_predict }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

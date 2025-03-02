@@ -5,12 +5,12 @@
   <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/logo.png' %}">
   <meta charset="UTF-8">
   <title>예측 운동 확인</title>
-  <!-- jQuery 라이브러리 포함 -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* 로딩 오버레이 스타일 (CSS는 나중에 따로 작업) */
+    /* 로딩 오버레이 스타일 */
     #loadingOverlay {
-      display: none; /* 초기에는 숨김 */
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
@@ -25,28 +25,35 @@
     }
   </style>
 </head>
-<body>
-  <div id="content">
-    <h1>예측된 운동: {{ workout }}</h1>
-    <p>예측된 운동이 맞습니까?</p>
+<body class="bg-light text-center">
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="p-4 bg-white shadow rounded">
+          <h1 class="mb-4">예측된 운동</h1>
+          <p class="fs-5">{{ workout }}</p>
+          <p class="text-muted">예측된 운동이 맞습니까?</p>
 
-    <!-- YES 버튼 폼 (자바스크립트 fetch로 처리) -->
-    <form id="yesForm">
-      {% csrf_token %}
-      <input type="hidden" name="workout" value="{{ workout }}">
-      <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
-      <button id="yesButton" type="submit" name="choice" value="yes">Yes</button>
-    </form>
+          <!-- YES 버튼 폼 -->
+          <form id="yesForm" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="workout" value="{{ workout }}">
+            <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+            <button id="yesButton" type="submit" class="btn btn-success">Yes</button>
+          </form>
 
-    <!-- NO 버튼 폼 (기존 방식: POST 제출) -->
-    <form id="noForm" action="{% url 'pose:workout_select' %}" method="post" style="display: inline;">
-      {% csrf_token %}
-      <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
-      <button type="submit" name="choice" value="no">No</button>
-    </form>
+          <!-- NO 버튼 폼 -->
+          <form id="noForm" action="{% url 'pose:workout_select' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+            <button type="submit" class="btn btn-danger">No</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- 로딩 오버레이 (YES 버튼 클릭 시 표시) -->
+  <!-- 로딩 오버레이 -->
   <div id="loadingOverlay">
     <img src="https://i.gifer.com/ZKZg.gif" alt="로딩중...">
   </div>
@@ -55,21 +62,17 @@
     $(function(){
       $('#yesButton').on('click', function(e){
         e.preventDefault();
-        // YES 폼에서 CSRF 토큰, workout, keypoint 값을 가져오기
         const csrfToken = $('#yesForm').find('input[name="csrfmiddlewaretoken"]').val();
         const workout = $('#yesForm').find('input[name="workout"]').val();
         const keypoint = $('#yesForm').find('input[name="keypoint"]').val();
 
-        // 로딩 오버레이 표시
         $('#loadingOverlay').show();
 
-        // FormData 객체 생성 및 데이터 추가
         const formData = new FormData();
         formData.append('workout', workout);
         formData.append('keypoint', keypoint);
         formData.append('choice', 'yes');
 
-        // fetch를 이용해 POST 방식으로 데이터 전송 (URL은 predict view)
         fetch("{% url 'pose:predict' %}", {
           method: 'POST',
           headers: {
@@ -85,9 +88,7 @@
           return response.text();
         })
         .then(data => {
-          // 서버 응답 데이터로 content 영역 업데이트
           $('#content').html(data);
-          // 로딩 오버레이 숨김
           $('#loadingOverlay').hide();
         })
         .catch(error => {
@@ -97,5 +98,7 @@
       });
     });
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
