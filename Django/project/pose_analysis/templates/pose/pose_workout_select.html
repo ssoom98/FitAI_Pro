@@ -6,68 +6,82 @@
   <meta charset="UTF-8">
   <title>운동 선택</title>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 600px;
+      margin-top: 50px;
+    }
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      z-index: 9999;
+      text-align: center;
+    }
+    #loadingOverlay img {
+      margin-top: 20%;
+    }
+  </style>
 </head>
 <body>
-  <h1>운동 선택</h1>
-  <form id="selectForm" action="{% url 'pose:predict' %}" method="post">
-    <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
-    {% csrf_token %}
-    <label for="exercise">운동을 선택하세요:</label>
-    <select name="workout" id="exercise">
-      <option value="Y-Exercise">Y-Exercise</option>
-      <option value="Good-Morning">Good-Morning</option>
-      <option value="Knee-Push-Up">Knee-Push-Up</option>
-      <option value="Dumbbell-Bent-Over-Row">Dumbbell-Bent-Over-Row</option>
-      <option value="Dumbbell-Incline-Chest-Fly">Dumbbell-Incline-Chest-Fly</option>
-      <option value="Dumbbell-Chest-Fly">Dumbbell-Chest-Fly</option>
-      <option value="Dumbbell-Curl">Dumbbell-Curl</option>
-      <option value="Dumbbell-Pullover">Dumbbell-Pullover</option>
-      <option value="Dips">Dips</option>
-      <option value="Lying-Leg-Raise">Lying-Leg-Raise</option>
-      <option value="Lying-Triceps-Extension">Lying-Triceps-Extension</option>
-      <option value="Lat-Pulldown">Lat-Pulldown</option>
-      <option value="Rowing-Machine">Rowing-Machine</option>
-      <option value="Barbell-Deadlift">Barbell-Deadlift</option>
-      <option value="Barbell-Lunge">Barbell-Lunge</option>
-      <option value="Barbell-Row">Barbell-Row</option>
-      <option value="Barbell-Squat">Barbell-Squat</option>
-      <option value="Barbell-Stiff-Leg-Deadlift">Barbell-Stiff-Leg-Deadlift</option>
-      <option value="Barbell-Curl">Barbell-Curl</option>
-      <option value="Bicycle-Crunch">Bicycle-Crunch</option>
-      <option value="Burpee-Test">Burpee-Test</option>
-      <option value="Side-Lunge">Side-Lunge</option>
-      <option value="Side-Lateral-Raise">Side-Lateral-Raise</option>
-      <option value="Standing-Knee-Raise">Standing-Knee-Raise</option>
-      <option value="Standing-Side-Crunch">Standing-Side-Crunch</option>
-      <option value="Step-Backward-Dynamic-Lunge">Step-Backward-Dynamic-Lunge</option>
-      <option value="Step-Forward-Dynamic-Lunge">Step-Forward-Dynamic-Lunge</option>
-      <option value="Scissor-Cross">Scissor-Cross</option>
-      <option value="Upright-Row">Upright-Row</option>
-      <option value="Overhead-Press">Overhead-Press</option>
-      <option value="Cable-Crunch">Cable-Crunch</option>
-      <option value="Cable-Push-Down">Cable-Push-Down</option>
-      <option value="Crunch">Crunch</option>
-      <option value="Cross-Lunge">Cross-Lunge</option>
-      <option value="Face-Pull">Face-Pull</option>
-      <option value="Push-Up">Push-Up</option>
-      <option value="Pull-Up">Pull-Up</option>
-      <option value="Front-Raise">Front-Raise</option>
-      <option value="Plank">Plank</option>
-      <option value="Hanging-Leg-Raise">Hanging-Leg-Raise</option>
-      <option value="Hip-Thrust">Hip-Thrust</option>
-    </select>
-    <button id="selectButton" type="submit">선택</button>
-  </form>
+  <div class="container">
+    <div class="card shadow p-4">
+      <h2 class="text-center mb-4">운동 선택</h2>
+      <form id="selectForm" action="{% url 'pose:predict' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+        <div class="mb-3">
+          <label for="exercise" class="form-label">운동을 선택하세요:</label>
+          <select class="form-select" name="workout" id="exercise">
+            <optgroup label="맨몸 운동">
+              <option value="Push-Up">푸쉬업 (Push-Up)</option>
+              <option value="Pull-Up">풀업 (Pull-Up)</option>
+              <option value="Plank">플랭크 (Plank)</option>
+              <option value="Burpee-Test">버피 테스트 (Burpee-Test)</option>
+              <option value="Bicycle-Crunch">바이시클 크런치 (Bicycle-Crunch)</option>
+              <option value="Lying-Leg-Raise">누운 다리 올리기 (Lying-Leg-Raise)</option>
+            </optgroup>
+            <optgroup label="덤벨 운동">
+              <option value="Dumbbell-Curl">덤벨 컬 (Dumbbell-Curl)</option>
+              <option value="Dumbbell-Row">덤벨 로우 (Dumbbell-Bent-Over-Row)</option>
+              <option value="Dumbbell-Chest-Fly">덤벨 체스트 플라이 (Dumbbell-Chest-Fly)</option>
+              <option value="Dumbbell-Overhead-Press">덤벨 오버헤드 프레스 (Overhead-Press)</option>
+            </optgroup>
+            <optgroup label="바벨 운동">
+              <option value="Barbell-Squat">바벨 스쿼트 (Barbell-Squat)</option>
+              <option value="Barbell-Deadlift">바벨 데드리프트 (Barbell-Deadlift)</option>
+              <option value="Barbell-Row">바벨 로우 (Barbell-Row)</option>
+              <option value="Barbell-Lunge">바벨 런지 (Barbell-Lunge)</option>
+            </optgroup>
+            <optgroup label="머신 운동">
+              <option value="Lat-Pulldown">랫풀다운 (Lat-Pulldown)</option>
+              <option value="Rowing-Machine">로잉 머신 (Rowing-Machine)</option>
+              <option value="Face-Pull">페이스 풀 (Face-Pull)</option>
+            </optgroup>
+          </select>
+        </div>
+        <button id="selectButton" type="submit" class="btn btn-primary w-100">선택</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 로딩 화면 -->
+  <div id="loadingOverlay">
+    <img src="https://i.gifer.com/ZKZg.gif" alt="로딩 중...">
+  </div>
 
   <script>
     $(document).ready(function(){
       $('#selectButton').on('click', function(e){
-        // 선택 버튼 클릭 시 폼 제출 전 로딩 오버레이 추가
-        $('body').append(
-          '<div id="loadingOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; text-align:center;">' +
-            '<img src="https://i.gifer.com/ZKZg.gif" alt="로딩중..." style="margin-top:20%;">' +
-          '</div>'
-        );
+        $('#loadingOverlay').fadeIn();
       });
     });
   </script>
