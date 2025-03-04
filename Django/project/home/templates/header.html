@@ -1,0 +1,26 @@
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="{% if request.path == '/body_type/' %}active{% endif %}">
+                    <a href="{% url 'body_type:body_type_home' %}">체형 분석</a>
+                </li>
+                <li class="{% if request.path == '/diet/' %}active{% endif %}">
+                    <a href="{% url 'diet:diet_input' %}">식단 추천</a>
+                </li>
+                <li class="{% if request.path == '/pose/' %}active{% endif %}">
+                    <a href="{% url 'pose:home' %}">자세 분석</a>
+                </li>
+
+                {% if user.is_authenticated %}
+                    <li><a href="#">{{ user }}님</a></li>
+                    <li><a href="{% url 'accounts:profile' %}">프로필</a></li>
+                    <li><a href="{% url 'accounts:logout' %}">로그아웃</a></li>
+                {% else %}
+                    <li><a href="{% url 'accounts:signup' %}">회원 가입</a></li>
+                    <li><a href="{% url 'accounts:login' %}">로그인</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

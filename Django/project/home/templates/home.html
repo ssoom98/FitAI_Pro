@@ -1,61 +1,16 @@
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 페이지</title>
-    <style>
-         .logo-container {
-            margin-top: 20px;
-        }
-
-        .logo {
-            width: 250px;
-            height: auto;
-        }
-
-        body {
-            text-align: center;
-            background-color: #ffffff;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 50px;
-        }
-
-        .btn {
-            width: 400px;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            padding-bottom: 15px;
-            text-decoration: none;
-            border-radius: 15px;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-text {
-            font-size: 25px;
-            font-weight: bold;
-            padding: 15px;
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="logo-container">
+     <div class="logo-container">
         <img src="{% static 'img/logo.png' %}" alt="로고" class="logo">
     </div>
+    {% include "header.html" %}
+
     <div class="button-container">
         <div class="btn-wrapper">
             <div class="btn-text">체형 예측</div>
@@ -70,5 +25,5 @@
         <a href="/pose/" class="btn" style="background-image: url('{% static 'img/pose.png' %}');"></a>
         </div>
     </div>
+    {% include "footer.html" with year=2025 %}
 </body>
-</html>

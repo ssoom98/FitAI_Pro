@@ -20,6 +20,8 @@ label_encoder = joblib.load(path3)
 eff_model = EfficientNetB0(weights="imagenet", include_top=False, pooling="avg")
 vgg_model = VGG16(weights="imagenet", include_top=False, pooling="avg")
 
+def body_type_home(request):
+    return render(request, 'body_type/upload.html')
 
 def preprocess_image(img_path):
     """ 이미지를 CNN 모델이 사용할 수 있도록 전처리 """
@@ -55,15 +57,15 @@ def predict_body_type(request):
             dmat_features = xgb.DMatrix(features)  # CNN 특징 벡터 → DMatrix 변환
             y_pred = xgb_model.predict(dmat_features)  # 예측된 신체 수치 (8~21개)
 
-            # 🔥 기존 특징 벡터(1792개) + 예측된 신체 수치(8~21개) 결합
+            # 기존 특징 벡터(1792개) + 예측된 신체 수치(8~21개) 결합
             combined_features = np.concatenate([features, y_pred], axis=1)  # 현재 (1, 1800)
 
-            # 🔥 부족한 Feature(0 또는 평균값) 추가하여 1813개로 맞추기
+            # 부족한 Feature(0 또는 평균값) 추가하여 1813개로 맞추기
             num_missing_features = 1813 - combined_features.shape[1]  # 부족한 Feature 개수 계산
             additional_features = np.zeros((1, num_missing_features))  # 부족한 Feature 0으로 채우기
             combined_features = np.concatenate([combined_features, additional_features], axis=1)  # (1, 1813)
 
-            # 🔥 체형 분류 모델 실행
+            # 체형 분류 모델 실행
             body_shape_index = xgb_classification.predict(combined_features).flatten()[0].item()
             body_shape_label = label_encoder.inverse_transform([int(body_shape_index)])[0]
 
