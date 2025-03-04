@@ -35,7 +35,7 @@
           <p class="text-muted">예측된 운동이 맞습니까?</p>
 
           <!-- YES 버튼 폼 -->
-          <form id="yesForm" class="d-inline">
+          <form id="yesForm" action="{% url 'pose:predict' %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="workout" value="{{ workout }}">
             <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
@@ -59,42 +59,10 @@
   </div>
 
   <script>
+    // 폼 제출 시 로딩 오버레이를 표시
     $(function(){
-      $('#yesButton').on('click', function(e){
-        e.preventDefault();
-        const csrfToken = $('#yesForm').find('input[name="csrfmiddlewaretoken"]').val();
-        const workout = $('#yesForm').find('input[name="workout"]').val();
-        const keypoint = $('#yesForm').find('input[name="keypoint"]').val();
-
-        $('#loadingOverlay').show();
-
-        const formData = new FormData();
-        formData.append('workout', workout);
-        formData.append('keypoint', keypoint);
-        formData.append('choice', 'yes');
-
-        fetch("{% url 'pose:predict' %}", {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': csrfToken
-          },
-          body: formData
-        })
-        .then(response => {
-          if (!response.ok) {
-            alert(`실패: ${response.status}`);
-            return;
-          }
-          return response.text();
-        })
-        .then(data => {
-          $('#content').html(data);
-          $('#loadingOverlay').hide();
-        })
-        .catch(error => {
-          alert("오류가 발생했습니다: " + error);
-          $('#loadingOverlay').hide();
-        });
+      $('#yesForm').on('submit', function(){
+         $('#loadingOverlay').show();
       });
     });
   </script>

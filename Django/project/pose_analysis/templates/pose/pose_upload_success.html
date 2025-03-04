@@ -26,37 +26,9 @@
   </style>
   <script>
     $(function(){
-      $('#next-button').on('click', function(e){
-         e.preventDefault();
-         const videoName = $('input[name="video_name"]').val();
-         const csrfToken = $('[name=csrfmiddlewaretoken]').val();
-
-         // 로딩 화면 표시
+      // 폼 제출 시 로딩 오버레이 표시
+      $('#next-form').on('submit', function(){
          $('#loadingOverlay').show();
-
-         const formData = new FormData();
-         formData.append('video_name', videoName);
-
-         fetch('/pose/pose_preview/', {
-           method: 'POST',
-           headers: { 'X-CSRFToken': csrfToken },
-           body: formData
-         })
-         .then(response => {
-            if(!response.ok){
-              alert(`실패: ${response.status}`);
-              return;
-            }
-            return response.text();
-         })
-         .then(data => {
-            $('#content').html(data);
-            $('#loadingOverlay').hide();
-         })
-         .catch(error => {
-            alert("오류가 발생했습니다: " + error);
-            $('#loadingOverlay').hide();
-         });
       });
     });
   </script>
@@ -69,7 +41,7 @@
           <h1 class="mb-4">동영상 업로드 성공!</h1>
           <p class="fs-5">업로드된 동영상: <strong>{{ video_name }}</strong></p>
 
-          <form id="next-form">
+          <form id="next-form" action="{% url 'pose:preview' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="video_name" value="{{ video_name }}">
             <button id="next-button" type="submit" class="btn btn-primary w-100 mt-3">다음</button>

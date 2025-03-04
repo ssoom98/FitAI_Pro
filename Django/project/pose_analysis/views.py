@@ -19,7 +19,6 @@ def pose_home(request):
             with open(save_path, 'wb+') as destination:
                 for chunk in uploaded_video.chunks():
                     destination.write(chunk)
-            # 업로드 성공 후, 업로드 성공 템플릿을 렌더링
             return render(request, 'pose/pose_upload_success.html', {'video_name': uploaded_video.name})
     else:
         form = VideoUploadForm()
