@@ -6,7 +6,7 @@ class SignupForm(UserCreationForm):
   phone_number = forms.CharField(label="전화", max_length=20)
   address = forms.CharField(label="주소", max_length=50)
   class Meta(UserCreationForm.Meta):
-    fields = UserCreationForm.Meta.fields + ('email',)
+    fields = UserCreationForm.Meta.fields
   def save(self, commit=True):
     user = super().save()
     profile = Profile(user=user,
