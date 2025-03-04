@@ -46,20 +46,25 @@
     gap: 20px;
 }
 
-/* ✅ 네비게이션 링크 스타일 */
+/* 네비게이션 링크 스타일 */
 .navbar-nav > li > a {
     font-size: 16px;
-    font-weight: 500;
-    padding: 12px 20px; /* ✅ 박스 크기 조정 */
+    font-weight: 700;
+    padding: 12px 20px; /* 박스 크기 조정 */
     transition: all 0.3s ease-in-out;
     color: white !important;
-    text-decoration: none !important; /* ✅ 밑줄 제거 */
-    border-radius: 8px; /* ✅ 둥근 박스 효과 */
+    text-decoration: none !important; /* 밑줄 제거 */
+    border-radius: 8px; /* 둥근 박스 효과 */
     background-color: transparent;
     border: 2px solid transparent;
+    text-shadow:
+        -0.5px -0.5px 0 gray,
+        0.5px -0.5px 0 gray,
+        -0.5px 0.5px 0 gray,
+        0.5px 0.5px 0 gray;
 }
 
-/* ✅ 네비게이션 박스 스타일 (호버 효과 추가) */
+/* 네비게이션 박스 스타일 (호버 효과 추가) */
 .navbar-nav > li > a:hover,
 .navbar-nav > li.active > a {
     background-color: #ffffff !important;
@@ -68,9 +73,9 @@
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ✅ 네비게이션 바와 로고가 겹치지 않도록 조정 */
+/* 네비게이션 바와 로고가 겹치지 않도록 조정 */
 body {
-    padding-top: 120px; /* ✅ 네비게이션 바와 로고 간 간격 확보 */
+    padding-top: 120px; /* 네비게이션 바와 로고 간 간격 확보 */
 }
 
 /* 버튼 스타일 */
@@ -81,7 +86,7 @@ body {
     margin-top: 50px;
 }
 
-.btn {
+a.btn {
     width: 400px;
     height: 400px;
     display: flex;
@@ -108,6 +113,41 @@ body {
 li {
     list-style: none;
 }
+.custom-btn {
+    background-color: #D8BFD8; /* 기존 Bootstrap 파란색 */
+    border-radius: 10px; /* 둥근 버튼 */
+    font-size: 18px; /* 폰트 크기 조정 */
+    padding: 10px 20px; /* 내부 여백 */
+    transition: 0.3s ease-in-out;
+}
 
-div{
+.custom-btn:hover {
+    background-color: #ffffff !important;
+    color: #6a0dad !important;
+    border: 2px solid #6a0dad !important;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.wrapper {
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    height: ; /* 화면 전체 높이 */
+}
+
+.content-wrapper {
+    max-width: 800px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    /* 추가 정렬 */
+    text-align: center; /* 내부 텍스트 정렬 */
+}
+.container.mt-5{
+   padding: 10px;
+   margin: 40 auto;
+   text-align: center;
+}
+.helptext{
+    display:none;
 }

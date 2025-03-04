@@ -9,9 +9,9 @@
     {{ form.as_table }}
     <tr>
       <td colspan="2" class="text-center">
-       <input type="submit" value="로그인">
+       <input type="submit" value="로그인" class="btn btn-primary custom-btn">
        <input type="button" value="취소"
-       onclick="location='{% url 'accounts:login'%}'">
+       onclick="location='{% url 'accounts:login'%}'" class="btn btn-primary custom-btn">
       </td>
      </tr>
    </table>
