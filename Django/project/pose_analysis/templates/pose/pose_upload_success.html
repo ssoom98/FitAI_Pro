@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  {% load static %}
-  <link rel="shortcut icon" type="image/x-icon" href="{% static 'image/logo.png' %}">
-  <meta charset="UTF-8">
-  <title>동영상 업로드 성공</title>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}동영상 업로드 성공{% endblock %}
+
+{% block content %}
+<style>
     /* 로딩 화면 스타일 */
     #loadingOverlay {
       display: none;
@@ -24,6 +21,7 @@
       margin-top: 20%;
     }
   </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(function(){
       // 폼 제출 시 로딩 오버레이 표시
@@ -32,12 +30,6 @@
       });
     });
   </script>
-</head>
-<body class="bg-light text-center">
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="p-4 bg-white shadow rounded">
           <h1 class="mb-4">동영상 업로드 성공!</h1>
           <p class="fs-5">업로드된 동영상: <strong>{{ video_name }}</strong></p>
 
@@ -46,10 +38,6 @@
             <input type="hidden" name="video_name" value="{{ video_name }}">
             <button id="next-button" type="submit" class="btn btn-primary w-100 mt-3">다음</button>
           </form>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- 로딩 오버레이 -->
   <div id="loadingOverlay">
@@ -57,5 +45,4 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>운동 자세 분석</title>
+</head>
+<body>
+    <h1>운동 자세 및 위험도 예측</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label>사진 또는 동영상 업로드:</label>
+        <input type="file" name="media">
+        <button type="submit">제출</button>
+    </form>
+</body>
+</html>
