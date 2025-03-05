@@ -24,25 +24,23 @@
           <h1 class="mb-4">예측된 운동</h1>
           <p class="fs-5">{{ workout }}</p>
           <p class="text-muted">예측된 운동이 맞습니까?</p>
-
+        <div class="forms-container">
           <!-- YES 버튼 폼 -->
           <form id="yesForm" action="{% url 'pose:predict' %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="workout" value="{{ workout }}">
             <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
-            <button id="yesButton" type="submit" class="btn btn-success">Yes</button>
+            <button id="yesButton" type="submit" class="btn btn-primary custom-btn">Yes</button>
           </form>
 
           <!-- NO 버튼 폼 -->
           <form id="noForm" action="{% url 'pose:workout_select' %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
-            <button type="submit" class="btn btn-danger">No</button>
+            <button type="submit" class="btn btn-primary custom-btn">No</button>
           </form>
         </div>
-      </div>
-    </div>
-  </div>
+
 
   <!-- 로딩 오버레이 -->
   <div id="loadingOverlay">
