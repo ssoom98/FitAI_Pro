@@ -29,14 +29,14 @@
           <form id="yesForm" action="{% url 'pose:predict' %}" method="post" class="d-inline">
             {% csrf_token %}
             <input type="hidden" name="workout" value="{{ workout }}">
-            <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+            <input type="hidden" name="keypoint" value='{{ keypoint|safe}}'>
             <button id="yesButton" type="submit" class="btn btn-primary custom-btn">Yes</button>
           </form>
 
           <!-- NO 버튼 폼 -->
           <form id="noForm" action="{% url 'pose:workout_select' %}" method="post" class="d-inline">
             {% csrf_token %}
-            <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+            <input type="hidden" name="keypoint" value='{{ keypoint|safe}}'>
             <button type="submit" class="btn btn-primary custom-btn">No</button>
           </form>
         </div>
