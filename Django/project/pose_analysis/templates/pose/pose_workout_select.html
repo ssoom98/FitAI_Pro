@@ -30,7 +30,7 @@
       <h2 class="text-center mb-4">운동 선택</h2>
       <form id="selectForm" action="{% url 'pose:predict' %}" method="post">
         {% csrf_token %}
-        <input type="hidden" name="keypoint" value='{{ keypoint|escapejs }}'>
+        <input type="hidden" name="keypoint" value='{{ keypoint|safe}}'>
         <div class="mb-3">
           <label for="exercise" class="form-label">운동을 선택하세요:</label>
           <select class="form-select" name="workout" id="exercise">
