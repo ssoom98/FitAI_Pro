@@ -25,15 +25,15 @@
 </div>
 
 # 목차
-[1. 주제선정 및 이유]()<br>
-[2. 팀 구성 및 역할]()<br>
-[3. Open Source 및 개발환경]()<br>
-[4. Gantt Chart]()<br>
-[5. 데이터 전처리]()<br>
-[6. 상관분석 및 시각화]()<br>
-[7. CNN & ML]()<br>
-[8. 웹구현]()<br>
-[9. 차후 수정 방향]()<br>
+[1. 주제선정 및 이유](https://github.com/ssoom98/FitAI_Pro/tree/master#1주제선정-및-이유)<br>
+[2. 팀 구성 및 역할](https://github.com/ssoom98/FitAI_Pro/tree/master#2팀-구성-및-역할)<br>
+[3. Open Source 및 개발환경](https://github.com/ssoom98/FitAI_Pro/tree/master#3open-source-및-개발환경)<br>
+[4. Gantt Chart](https://github.com/ssoom98/FitAI_Pro/tree/master#4gantt-chart)<br>
+[5. 데이터 전처리](https://github.com/ssoom98/FitAI_Pro/tree/master#5데이터-전처리)<br>
+[6. 상관분석 및 시각화](https://github.com/ssoom98/FitAI_Pro/tree/master#6상관분석-및-시각화)<br>
+[7. CNN & ML](https://github.com/ssoom98/FitAI_Pro/tree/master#7cnn--ml)<br>
+[8. 웹구현](https://github.com/ssoom98/FitAI_Pro/tree/master#8웹구현)<br>
+[9. 차후 수정 방향](https://github.com/ssoom98/FitAI_Pro/tree/master#9차후-수정-방향)<br>
 
 ## 1.주제선정 및 이유
 ![Image]()
