@@ -18,12 +18,11 @@
     height: auto;
 }
 
-/* ✅ 네비게이션 바 스타일 */
+/* 네비게이션 바 스타일 */
 .navbar-default {
-    background-color: #D8BFD8; /* ✅ 진한 연보라색으로 변경 */
+    background-color: #D8BFD8;
     padding: 12px 0;
-    position: fixed; /* ✅ 네비게이션 바를 고정 */
-    top: 70px; /* ✅ 로고와 간격 확보 */
+    top: 70px; /* 로고와 간격 확보 */
     width: 100%;
     display: flex;
     justify-content: center;
@@ -51,7 +50,7 @@
 .navbar-nav > li > a {
     font-size: 16px;
     font-weight: 700;
-    padding: 12px 20px; /* 박스 크기 조정 */
+    padding: 12px 15px; /* 박스 크기 조정 */
     transition: all 0.3s ease-in-out;
     color: white !important;
     text-decoration: none !important; /* 밑줄 제거 */
@@ -155,7 +154,6 @@ li {
     padding: 20px;
     margin: 0 auto; /* 가로 중앙 정렬 */
     text-align: center;
-    margin-top: 80px;
 }
 
 /* 폼 스타일 */
@@ -269,3 +267,4 @@ td label {
     justify-content: center; /* 또는 space-around, space-evenly */
     gap: 20px; /* 폼 사이 간격 */
 }
+.
