@@ -26,6 +26,7 @@ urlpatterns = [
     path("body_type/", include("body_type.urls")),
     path('diet/', include('diet_recommendation.urls')),
     path('pose/', include('pose_analysis.urls')),
+    path('accounts/', include('accounts.urls', namespace='accounts'))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

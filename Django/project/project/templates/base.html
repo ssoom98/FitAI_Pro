@@ -1,0 +1,25 @@
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FitAI-Pro{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-light text-center">
+    <div class="logo-container">
+        <img src="{% static 'img/logo.png' %}" alt="로고" class="logo">
+    </div>
+
+    <!-- 네비게이션 바 포함 -->
+    {% include "header.html" %}
+
+    <!-- 페이지별 컨텐츠가 삽입될 영역 -->
+    <div class="container mt-5">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

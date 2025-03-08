@@ -34,8 +34,6 @@
                     <p><strong>예측된 체형:</strong> {{ body_shape }}</p>
                     <h4 class="mt-3">예측된 신체 수치:</h4>
                     <ul class="list-group">
-                        <li class="list-group-item">키: {{ y_pred.0|floatformat:2 }} cm</li>
-                        <li class="list-group-item">몸무게: {{ y_pred.1|floatformat:2 }} kg</li>
                         <li class="list-group-item">뱃살허리둘레: {{ y_pred.2|floatformat:2 }} cm</li>
                         <li class="list-group-item">허리둘레: {{ y_pred.3|floatformat:2 }} cm</li>
                         <li class="list-group-item">엉덩이둘레: {{ y_pred.4|floatformat:2 }} cm</li>
@@ -43,7 +41,7 @@
                         <li class="list-group-item">가슴둘레: {{ y_pred.6|floatformat:2 }} cm</li>
                         <li class="list-group-item">어깨사이너비: {{ y_pred.7|floatformat:2 }} cm</li>
                     </ul>
-                    <a href="{% url 'predict_body_type' %}" class="btn btn-secondary w-100 mt-3">다시 예측하기</a>
+
                 </div>
             </div>
         </div>
