@@ -7,7 +7,9 @@
 - python library:
 - Python
 - micro Framework : FastAPI
-- 프로젝트 소개 : 2~ 3줄 간단한 소개
+- 프로젝트 소개 : 건강한 삶을 위한 AI 도구
+당신의 체형, 식단 관리 및 개인 헬스 트레이너가 되어드립니다.
+
 
 <div align=center>
   <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
